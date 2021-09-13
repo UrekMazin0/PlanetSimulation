@@ -1,0 +1,11 @@
+# default cmake build folder
+build/
+
+# Qt build folder
+*build-*
+
+# QtCreator CMake
+CMakeLists.txt.user*
+
+# QtCreator
+*.autosave

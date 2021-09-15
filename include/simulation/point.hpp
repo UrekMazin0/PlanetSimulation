@@ -10,11 +10,11 @@
 struct Point
 {
 public:
-	Point(Vector2D pos);
+	Point(SWVector2D::Vector2D pos);
 	~Point() {}
 
 	// Center
-	Vector2D position, prevPosition;
+	SWVector2D::Vector2D position, prevPosition;
 	bool bLocked = false;
 	const float& Radius() const { return this->_radius; }
 
@@ -31,10 +31,10 @@ private:
 	void addPoint2StaticStorage(const Point& p) const;
 };
 
-Point::Point(Vector2D pos)
+Point::Point(SWVector2D::Vector2D pos)
 {
 	this->position = pos;
-	this->prevPosition = Vector2D::Zero();
+	this->prevPosition = SWVector2D::Vector2D::Zero();
 
 //	Point::pointObjects.push_back(std::make_unique<Point>(this));
 }
@@ -46,12 +46,12 @@ void Point::LockUnlock()
 
 float Point::Distance( const Point& obj1, const Point& obj2)
 {
-	return Vector2D::Distance(obj1.position, obj2.position) - (obj1.Radius() + obj2.Radius());
+	return SWVector2D::Vector2D::Distance(obj1.position, obj2.position) - (obj1.Radius() + obj2.Radius());
 }
 
 float Point::Distance(const Point& obj2) const
 {
-	return Vector2D::Distance(this->position, obj2.position) - (this->Radius() + obj2.Radius());
+	return SWVector2D::Vector2D::Distance(this->position, obj2.position) - (this->Radius() + obj2.Radius());
 }
 
 void Point::addPoint2StaticStorage(const Point &p) const

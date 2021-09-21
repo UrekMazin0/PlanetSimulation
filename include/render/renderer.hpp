@@ -4,6 +4,9 @@
 #include <SFML/Graphics.hpp>
 
 #include "simulation/RenderObjectsContainer.hpp"
+#include "simulation/point.hpp"
+
+using RenObjCon = RenderObjectsContainers;
 
 struct Renderer
 {
@@ -15,11 +18,15 @@ struct Renderer
 	~Renderer()
 	{}
 
-	void render(sf::RenderTarget& target);
+	void render(sf::RenderTarget& target, RenObjCon objCon);
 };
 
-void render(sf::RenderTarget& target, )
+void render(sf::RenderTarget& target, RenObjCon objCon)
 {
+	for(const Point & point : objCon.PointObjects)
+	{
+		point.drawPointSFMLWindow(target);
+	}
 
 //	const sf::RenderStates& rs = vp_handler.getRenderState();
 //	// Draw background;

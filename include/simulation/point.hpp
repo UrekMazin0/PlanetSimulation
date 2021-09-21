@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "physics/vector2d.hpp"
+#include "simulation/config.hpp"
 
 struct Point
 {
@@ -23,7 +24,7 @@ public:
 	static float Distance( const Point& obj1, const Point& obj2);
 	float Distance(const Point& obj2) const;
 
-	void drawPointSFMLWindow(sf::RenderTarget& target);
+	void drawPointSFMLWindow(sf::RenderTarget& target) const;
 
 private:
 	float _radius = 20;
@@ -37,6 +38,14 @@ Point::Point(SWVector2D::Vector2D pos)
 	this->prevPosition = SWVector2D::Vector2D::Zero();
 
 //	Point::pointObjects.push_back(std::make_unique<Point>(this));
+}
+
+void Point::drawPointSFMLWindow(sf::RenderTarget &target) const
+{
+	sf::Sprite sprite;
+	sprite.setTexture(*Config::POINT_TEXTURE);
+	sprite.setPosition(this->position.x, this->position.y);
+	target.draw(sprite);
 }
 
 void Point::LockUnlock()

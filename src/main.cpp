@@ -22,7 +22,8 @@ int main()
 		// Update simulation
 		simulation.processEvents();
 
-		window.clear(sf::Color(94, 87, 87));
+		window.clear(sf::Color(155, 100, 200));
+		simulation.render(window);
 
 		window.display();
 

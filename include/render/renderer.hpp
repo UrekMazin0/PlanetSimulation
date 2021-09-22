@@ -18,16 +18,16 @@ struct Renderer
 	~Renderer()
 	{}
 
-	void render(sf::RenderTarget& target, RenObjCon objCon);
+	void render(sf::RenderTarget& target, RenObjCon& objCon);
 };
 
-void render(sf::RenderTarget& target, RenObjCon objCon)
+void Renderer::render(sf::RenderTarget& target, RenObjCon& objCon)
 {
 	for(const Point & point : objCon.PointObjects)
 	{
 		point.drawPointSFMLWindow(target);
 	}
-
+}
 //	const sf::RenderStates& rs = vp_handler.getRenderState();
 //	// Draw background;
 //	sf::RectangleShape ground(sf::Vector2f(world.size.x, world.size.y));
@@ -46,6 +46,5 @@ void render(sf::RenderTarget& target, RenObjCon objCon)
 //	for (ColonyRenderer& colony : colonies) {
 //		colony.render_charts(target);
 //	}
-}
 
 #endif // RENDERER_H

@@ -14,6 +14,11 @@ struct RenderObjectsContainers
 	{
 
 	}
+
+	void clearObjects()
+	{
+		this->PointObjects.clear();
+	}
 };
 
 #endif // ROC

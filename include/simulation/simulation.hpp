@@ -47,6 +47,10 @@ void Simulation::initEventCallbacks()
 		this->addPoint(sf::Mouse::getPosition(win));
 	});
 
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Space, [this](sfev::CstEv) {
+		this->objContainer.clearObjects();
+	});
+
 	ev_manager.addEventCallback(sf::Event::Closed, [this](sfev::CstEv) {
 		ev_manager.getWindow().close();
 	});
@@ -68,6 +72,7 @@ void Simulation::processEvents()
 
 void Simulation::render(sf::RenderTarget& target)
 {
+	RenObjCon& link = this->objContainer;
 	renderer.render(target, this->objContainer);
 }
 

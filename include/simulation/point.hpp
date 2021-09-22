@@ -44,7 +44,8 @@ void Point::drawPointSFMLWindow(sf::RenderTarget &target) const
 {
 	sf::Sprite sprite;
 	sprite.setTexture(*Config::POINT_TEXTURE);
-	sprite.setPosition(this->position.x, this->position.y);
+	sprite.setColor(sf::Color::Red);
+	sprite.setPosition(this->position.x-60, this->position.y-60);
 	target.draw(sprite);
 }
 

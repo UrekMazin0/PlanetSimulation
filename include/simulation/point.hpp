@@ -24,29 +24,46 @@ public:
 	static float Distance( const Point& obj1, const Point& obj2);
 	float Distance(const Point& obj2) const;
 
+	void setPosition(SWVector2D::Vector2D newPosition);
 	void drawPointSFMLWindow(sf::RenderTarget& target) const;
+	bool checkVectorCollision(SWVector2D::Vector2D vector) const;
+
+	bool operator==( const Point &obj2) const;
+	bool operator!=( const Point &obj2) const;
 
 private:
-	float _radius = 20;
-	static std::list<std::unique_ptr<Point>> pointObjects;
-	void addPoint2StaticStorage(const Point& p) const;
+	float _radius = 60;
 };
 
 Point::Point(SWVector2D::Vector2D pos)
 {
 	this->position = pos;
 	this->prevPosition = SWVector2D::Vector2D::Zero();
-
-//	Point::pointObjects.push_back(std::make_unique<Point>(this));
 }
 
 void Point::drawPointSFMLWindow(sf::RenderTarget &target) const
 {
 	sf::Sprite sprite;
 	sprite.setTexture(*Config::POINT_TEXTURE);
-	sprite.setColor(sf::Color::Red);
 	sprite.setPosition(this->position.x-60, this->position.y-60);
 	target.draw(sprite);
+}
+
+bool Point::checkVectorCollision(SWVector2D::Vector2D vector) const
+{
+	return SWVector2D::Vector2D::Distance(this->position, vector) <= this->Radius() ?
+				true :
+				false;
+}
+
+bool Point::operator==(const Point &obj2) const
+{
+	return this->position == obj2.position ? true : false;
+}
+
+bool Point::operator!=(const Point &obj2) const
+{
+	return this->position != obj2.position ? true : false;
 }
 
 void Point::LockUnlock()
@@ -64,9 +81,10 @@ float Point::Distance(const Point& obj2) const
 	return SWVector2D::Vector2D::Distance(this->position, obj2.position) - (this->Radius() + obj2.Radius());
 }
 
-void Point::addPoint2StaticStorage(const Point &p) const
+void Point::setPosition(SWVector2D::Vector2D newPosition)
 {
-	auto buffer = std::make_unique<Point>(p);
+	this->prevPosition = this->position;
+	this->position = newPosition;
 }
 
 

@@ -1,23 +1,24 @@
 #ifndef ROC
 #define ROC
 
-#include <list>
+#include <vector>
+#include <memory>
 
 #include "simulation/point.hpp"
 
 struct RenderObjectsContainers
 {
-	std::list<Point> PointObjects;
+	std::vector<Planet> PlanetsObjects;
 
 	RenderObjectsContainers()
-		: PointObjects()
+		: PlanetsObjects()
 	{
 
 	}
 
 	void clearObjects()
 	{
-		this->PointObjects.clear();
+		this->PlanetsObjects.clear();
 	}
 };
 

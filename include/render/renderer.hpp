@@ -5,6 +5,7 @@
 
 #include "simulation/RenderObjectsContainer.hpp"
 #include "simulation/point.hpp"
+#include "IDrawing.h"
 
 using RenObjCon = RenderObjectsContainers;
 
@@ -23,28 +24,14 @@ struct Renderer
 
 void Renderer::render(sf::RenderTarget& target, RenObjCon& objCon)
 {
-	for(const Point & point : objCon.PointObjects)
+	sf::Sprite sprite;
+	sprite.setTexture(*Config::BACKGROUND_TEXTURE);
+//	sprite.setScale(sf::Vector2f(sprite_scale, sprite_scale));
+	target.draw(sprite);
+
+	for(const auto & point : objCon.PlanetsObjects)
 	{
-		point.drawPointSFMLWindow(target);
+		point.Draw(target);
 	}
 }
-//	const sf::RenderStates& rs = vp_handler.getRenderState();
-//	// Draw background;
-//	sf::RectangleShape ground(sf::Vector2f(world.size.x, world.size.y));
-//	ground.setFillColor(sf::Color::Black);
-//	target.draw(ground, rs);
-//	// Draw world
-//	world.render(target, rs);
-//	// Draw ants and colonies
-//	for (ColonyRenderer& colony : colonies) {
-//		if (render_ants) {
-//			colony.renderAnts(target, rs);
-//		}
-//		colony.render(target, rs);
-//	}
-//	// Render UI elements
-//	for (ColonyRenderer& colony : colonies) {
-//		colony.render_charts(target);
-//	}
-
 #endif // RENDERER_H

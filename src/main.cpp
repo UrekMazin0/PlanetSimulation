@@ -16,14 +16,16 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(Config::WINDOW_WIDTH, Config::WINDOW_HEIGHT), "PointStickSimulation", window_style, settings);
 	window.setFramerateLimit(60);
 
+	float dt = 0.016;
 	Simulation simulation(window);
 
 	while (window.isOpen()) {
-		// Update simulation
+
 		simulation.processEvents();
 
-		window.clear(sf::Color(155, 100, 200));
 		simulation.render(window);
+
+		simulation.update(dt);
 
 		window.display();
 

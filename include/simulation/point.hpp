@@ -7,84 +7,100 @@
 
 #include "physics/vector2d.hpp"
 #include "simulation/config.hpp"
+#include "render/IDrawing.h"
 
-struct Point
+class Planet : public IDrawing
 {
 public:
-	Point(SWVector2D::Vector2D pos);
-	~Point() {}
+	Planet(SWVector2D::Vector2D pos, float m = 10);
+	~Planet() {}
 
 	// Center
 	SWVector2D::Vector2D position, prevPosition;
 	bool bLocked = false;
+	float mass;
+
 	const float& Radius() const { return this->_radius; }
 
 	void LockUnlock();
 
-	static float Distance( const Point& obj1, const Point& obj2);
-	float Distance(const Point& obj2) const;
+	static float Distance( const Planet& obj1, const Planet& obj2);
+	float Distance(const Planet& obj2) const;
+
+	void move(SWVector2D::Vector2D vector);
 
 	void setPosition(SWVector2D::Vector2D newPosition);
-	void drawPointSFMLWindow(sf::RenderTarget& target) const;
+	void Draw(sf::RenderTarget& target) const;
 	bool checkVectorCollision(SWVector2D::Vector2D vector) const;
 
-	bool operator==( const Point &obj2) const;
-	bool operator!=( const Point &obj2) const;
+	bool operator==( const Planet &obj2) const;
+	bool operator!=( const Planet &obj2) const;
 
 private:
-	float _radius = 60;
+	float _radius = 10;
+	float sprite_scale = 0.5f;
 };
 
-Point::Point(SWVector2D::Vector2D pos)
+Planet::Planet(SWVector2D::Vector2D pos, float m)
+	:position(pos)
+	,prevPosition(SWVector2D::Vector2D::Zero())
+	,mass(m)
 {
-	this->position = pos;
-	this->prevPosition = SWVector2D::Vector2D::Zero();
+
 }
 
-void Point::drawPointSFMLWindow(sf::RenderTarget &target) const
+void Planet::Draw(sf::RenderTarget &target) const
 {
 	sf::Sprite sprite;
 	sprite.setTexture(*Config::POINT_TEXTURE);
-	sprite.setPosition(this->position.x-60, this->position.y-60);
+	sprite.setScale(sf::Vector2f(sprite_scale, sprite_scale));
+	sprite.setPosition(position.x - _radius*sprite_scale, position.y - _radius*sprite_scale);
 	target.draw(sprite);
 }
 
-bool Point::checkVectorCollision(SWVector2D::Vector2D vector) const
+bool Planet::checkVectorCollision(SWVector2D::Vector2D vector) const
 {
-	return SWVector2D::Vector2D::Distance(this->position, vector) <= this->Radius() ?
+	return SWVector2D::Vector2D::Distance(this->position, vector) <= _radius*sprite_scale ?
 				true :
 				false;
 }
 
-bool Point::operator==(const Point &obj2) const
+bool Planet::operator==(const Planet &obj2) const
 {
 	return this->position == obj2.position ? true : false;
 }
 
-bool Point::operator!=(const Point &obj2) const
+bool Planet::operator!=(const Planet &obj2) const
 {
 	return this->position != obj2.position ? true : false;
 }
 
-void Point::LockUnlock()
+void Planet::LockUnlock()
 {
 	this->bLocked = !this->bLocked;
 }
 
-float Point::Distance( const Point& obj1, const Point& obj2)
+float Planet::Distance( const Planet& obj1, const Planet& obj2)
 {
 	return SWVector2D::Vector2D::Distance(obj1.position, obj2.position) - (obj1.Radius() + obj2.Radius());
 }
 
-float Point::Distance(const Point& obj2) const
+float Planet::Distance(const Planet& obj2) const
 {
 	return SWVector2D::Vector2D::Distance(this->position, obj2.position) - (this->Radius() + obj2.Radius());
 }
 
-void Point::setPosition(SWVector2D::Vector2D newPosition)
+void Planet::setPosition(SWVector2D::Vector2D newPosition)
 {
 	this->prevPosition = this->position;
 	this->position = newPosition;
+}
+
+void Planet::move(SWVector2D::Vector2D vector)
+{
+	this->prevPosition = this->position;
+
+	this->position += vector;
 }
 
 

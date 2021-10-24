@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include "simulation/point.hpp"
+#include "simulation/Planet.hpp"
 
 struct RenderObjectsContainers
 {

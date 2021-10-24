@@ -7,11 +7,11 @@
 #include <iostream>
 #include <memory>
 
-#include "simulation/point.hpp"
-#include "common/event_handler.hpp"
-#include "physics/vector2d.hpp"
+#include "simulation/Planet.hpp"
+#include "common/EventHandler.hpp"
+#include "physics/Vector2d.hpp"
 #include "simulation/RenderObjectsContainer.hpp"
-#include "render/renderer.hpp"
+#include "render/Renderer.hpp"
 
 using PointList = std::list<Planet>;
 using RenObjCon = RenderObjectsContainers;
@@ -31,7 +31,8 @@ public:
 
 	void initEventCallbacks();
 
-	void addPoint(sf::Vector2i vector, float m = 10);
+	void addPoint(sf::Vector2i vector, float m = 10,
+				  std::shared_ptr<sf::Texture> t = Config::PLANET_1_TEXTURE);
 	bool checkMousePointCollision(sf::Vector2i mousePos);
 
 	void processEvents();
@@ -59,21 +60,8 @@ Simulation::Simulation(sf::Window &window)
 
 void Simulation::initEventCallbacks()
 {
-	ev_manager.addMousePressedCallback(sf::Mouse::Left, [&](sfev::CstEv) {
-		addPoint(sf::Mouse::getPosition(win));
-	});
-
-//	ev_manager.addMousePressedCallback(sf::Mouse::Right, [&](sfev::CstEv) {
-//		if(checkMousePointCollision(sf::Mouse::getPosition(win))){
-//			ev_manager.addEventCallback(sf::Event::MouseMoved, [&](sfev::CstEv) {
-//				_moveBoundPoint(sf::Mouse::getPosition());
-//			});
-//		}
-//	});
-
-//	ev_manager.addMouseReleasedCallback(sf::Mouse::Right, [&](sfev::CstEv) {
-//		_mouseBoundPoint = nullptr;
-//		ev_manager.removeCallback(sf::Event::MouseMoved);
+//	ev_manager.addMousePressedCallback(sf::Mouse::Left, [&](sfev::CstEv) {
+//		addPoint(sf::Mouse::getPosition(win));
 //	});
 
 	ev_manager.addKeyPressedCallback(sf::Keyboard::Space, [&](sfev::CstEv) {
@@ -88,28 +76,39 @@ void Simulation::initEventCallbacks()
 		ev_manager.getWindow().close();
 	});
 
-	ev_manager.addKeyPressedCallback(sf::Keyboard::B, [&](sfev::CstEv) {
-		addPoint(sf::Mouse::getPosition(win), 10000);
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Num1, [&](sfev::CstEv) {
+		addPoint(sf::Mouse::getPosition(win), 1000, Config::PLANET_1_TEXTURE);
+	});
+
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Num2, [&](sfev::CstEv) {
+		addPoint(sf::Mouse::getPosition(win), 500, Config::PLANET_2_TEXTURE);
+	});
+
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Num3, [&](sfev::CstEv) {
+		addPoint(sf::Mouse::getPosition(win), 1000, Config::PLANET_3_TEXTURE);
+	});
+
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Num4, [&](sfev::CstEv) {
+		addPoint(sf::Mouse::getPosition(win), 5000, Config::PLANET_4_TEXTURE);
+	});
+
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Num5, [&](sfev::CstEv) {
+		addPoint(sf::Mouse::getPosition(win), 100, Config::PLANET_5_TEXTURE);
+	});
+
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Num6, [&](sfev::CstEv) {
+		addPoint(sf::Mouse::getPosition(win), 1000, Config::PLANET_6_TEXTURE);
+	});
+
+	ev_manager.addKeyPressedCallback(sf::Keyboard::Num7, [&](sfev::CstEv) {
+		addPoint(sf::Mouse::getPosition(win), 20000, Config::BLACK_HOLE_TEXTURE);
 	});
 }
 
-void Simulation::addPoint(sf::Vector2i mousePos, float m)
+void Simulation::addPoint(sf::Vector2i mousePos, float m, std::shared_ptr<sf::Texture> t)
 {
-	this->objContainer.PlanetsObjects.push_back(Planet(SWVector2D::Vector2D(mousePos), m));
+	this->objContainer.PlanetsObjects.push_back(Planet(SWVector2D::Vector2D(mousePos), t, m));
 }
-
-//bool Simulation::checkMousePointCollision(sf::Vector2i mousePos)
-//{
-//	for(auto &point : objContainer.PointObjects)
-//	{
-//		if(point->checkVectorCollision(SWVector2D::Vector2D(mousePos)))
-//		{
-//			_mouseBoundPoint = &point;
-//			return true;
-//		}
-//	}
-//	return false;
-//}
 
 void Simulation::render(sf::RenderTarget& target)
 {
@@ -125,6 +124,7 @@ void Simulation::update(float dt)
 	{
 		Planet &p1 = objContainer.PlanetsObjects[i];
 
+		// heavy planet
 		if(p1.mass >= 10000)
 			continue;
 
@@ -142,6 +142,8 @@ void Simulation::update(float dt)
 
 			if( d > p1.Radius())
 			{
+//				p1.velocity.x = (0.03 * p2.mass / (d*d) * (p2.position.x - p1.position.x)/d)*5;
+//				p2.velocity.y = (0.03 * p2.mass / (d*d) * (p2.position.y - p1.position.y)/d)*5;
 				vec.x += (0.03 * p2.mass / (d*d) * (p2.position.x - p1.position.x)/d)*5;
 				vec.y += (0.03 * p2.mass / (d*d) * (p2.position.y - p1.position.y)/d)*5;
 			}
@@ -151,21 +153,15 @@ void Simulation::update(float dt)
 			}
 		}
 
-		if(!collision)
-		{
-			std::cout << vec.x << ":" << vec.y << std::endl;
-			p1.move(vec);
-		}
-		else
-			objContainer.PlanetsObjects.erase(objContainer.PlanetsObjects.begin()+i);
+//		if(!collision)
+//		{
+			p1.update(vec);
+			p1.move();
+//		}
+//		else
+//			objContainer.PlanetsObjects.erase(objContainer.PlanetsObjects.begin()+i);
 	}
 }
-
-//void Simulation::_moveBoundPoint(sf::Vector2i mousePos)
-//{
-//	if(_mouseBoundPoint != nullptr)
-//		_mouseBoundPoint->setPosition(SWVector2D::Vector2D(mousePos));
-//}
 
 void Simulation::processEvents()
 {
